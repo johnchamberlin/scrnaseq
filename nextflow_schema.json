@@ -151,6 +151,11 @@
                     "description": "Specify a path to the precomputed STAR index.",
                     "help_text": "> NB: This has to be computed with STAR Version 2.7 or later, as STARsolo was only first supported by STAR Version 2.7.",
                     "fa_icon": "fas fa-asterisk"
+                },
+                "solo_features": {
+                    "type": "string",
+                    "description": "STARsolo quantification features, whitespace separated list (Gene GeneFull SJ Velocyto)",
+                    "default": "Gene"
                 }
             },
             "fa_icon": "fas fa-star"

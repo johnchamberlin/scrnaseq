@@ -526,9 +526,11 @@ process star {
           --runDirPerm All_RWX \\
           --outFileNamePrefix $prefix $seq_center \\
           --soloType Droplet \\
-          --soloCBwhitelist $whitelist
+          --soloCBwhitelist $whitelist \\
+          --soloFeatures $solo_features \\ # JC added
+          --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM # JC added
 
-    samtools index ${prefix}Aligned.sortedByCoord.out.bam
+    samtools index -@ ${task.cpus} ${prefix}Aligned.sortedByCoord.out.bam # JC modified
     """
 }
 
