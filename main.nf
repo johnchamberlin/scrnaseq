@@ -528,7 +528,8 @@ process star {
           --soloType Droplet \\
           --soloCBwhitelist $whitelist \\
           --soloFeatures $solo_features \\ # JC added
-          --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM # JC added
+          --soloBarcodeReadLength $solo_bc_length \\ # JC added
+          --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM # JC added, hard coded
 
     samtools index -@ ${task.cpus} ${prefix}Aligned.sortedByCoord.out.bam # JC modified
     """
