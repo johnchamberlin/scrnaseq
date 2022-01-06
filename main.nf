@@ -514,6 +514,9 @@ process star {
     seq_center = params.seq_center ? "--outSAMattrRGline ID:$prefix 'CN:$params.seq_center'" : ''
     cdna_read = reads[0]
     barcode_read = reads[1]
+    solo_bc_length = params.solo_bc_length
+    solo_features = params.solo_features
+
     """
     STAR --genomeDir $index \\
           --sjdbGTFfile $gtf \\
