@@ -18,7 +18,7 @@ dependencies:
   - bioconda::bioawk=1.0
   - bioconda::bioconductor-alevinqc=1.2.0
   - bioconda::bioconductor-tximport=1.14.0
-  - bioconda::star=2.7.2c #2.7.3a is broken!
+  - bioconda::star=2.7.9a #2.7.3a is broken!
   - samtools=1.10
   - gffread=0.11.7
   - bioconda::kallisto=0.46.2
