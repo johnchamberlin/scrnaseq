@@ -514,7 +514,7 @@ process star {
     seq_center = params.seq_center ? "--outSAMattrRGline ID:$prefix 'CN:$params.seq_center'" : ''
     cdna_read = reads[0]
     barcode_read = reads[1]
-    solo_bc_length = params.solo_bc_length
+    // solo_bc_length = params.solo_bc_length
     solo_features = params.solo_features
 
     """
@@ -531,7 +531,7 @@ process star {
           --soloType Droplet \\
           --soloCBwhitelist $whitelist \\
           --soloFeatures $solo_features \\ # JC added
-          --soloBarcodeReadLength $solo_bc_length \\ # JC added
+          --soloBarcodeReadLength 150 \\ # JC added
           --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM # JC added, hard coded
 
     samtools index -@ ${task.cpus} ${prefix}Aligned.sortedByCoord.out.bam # JC modified
