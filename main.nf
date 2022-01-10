@@ -530,9 +530,9 @@ process star {
           --outFileNamePrefix $prefix $seq_center \\
           --soloType Droplet \\
           --soloCBwhitelist $whitelist \\
-          --soloFeatures $solo_features \\ # JC added
-          --soloBarcodeReadLength 150 \\ # JC added
-          --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM # JC added, hard coded
+          --soloFeatures $solo_features \\ 
+          --soloBarcodeReadLength 150 \\ 
+          --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM
 
     samtools index -@ ${task.cpus} ${prefix}Aligned.sortedByCoord.out.bam # JC modified
     """
