@@ -14,6 +14,8 @@
 
 ## Introduction
 
+Fork of the nf-core scrnaseq repo by John Chamberlin. Goal: enable all STARsolo features to be used. 
+
 <!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
 **nf-core/scrnaseq** is a bioinformatics best-practise analysis pipeline for
 
