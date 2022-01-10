@@ -48,7 +48,7 @@ if( params.star_index && params.aligner == 'star' ){
         .ifEmpty { exit 1, "STAR index not found: ${params.star_index}" }
 }
 
-if (params.aligner == 'star' && (!params.star_index && (!params.gtf || !params.fasta))){
+if (params.aligner == 'star' && (!params.star_index && (!params.gtf || !params.fasta))){ //if no star index, and no (GTF+FASTA), error:
   exit 1, "STAR needs either a GTF + FASTA or a precomputed index supplied."
 }
 
