@@ -271,24 +271,24 @@ process unzip_10x_barcodes {
  * Preprocessing - Extract transcriptome fasta from genome fasta
  */
 
-process extract_transcriptome {
-    tag "${genome_fasta}"
-    publishDir "${params.outdir}/reference_data/extract_transcriptome", mode: 'copy'
-
-    input:
-    file genome_fasta from genome_fasta_extract_transcriptome
-    file gtf from gtf_extract_transcriptome
-
-    output:
-    file "${genome_fasta}.transcriptome.fa" into (transcriptome_fasta_alevin_extracted, transcriptome_fasta_kallisto_extracted)
-
-    when: !params.transcript_fasta && (params.aligner == 'alevin' || params.aligner == 'kallisto')
-    script:
-    // -F to preserve all GTF attributes in the fasta ID
-    """
-    gffread -F $gtf -w "${genome_fasta}.transcriptome.fa" -g $genome_fasta
-    """
-}
+//process extract_transcriptome {
+//    tag "${genome_fasta}"
+//    publishDir "${params.outdir}/reference_data/extract_transcriptome", mode: 'copy'
+//
+//    input:
+//    file genome_fasta from genome_fasta_extract_transcriptome
+//    file gtf from gtf_extract_transcriptome
+//
+//    output:
+//    file "${genome_fasta}.transcriptome.fa" into (transcriptome_fasta_alevin_extracted, transcriptome_fasta_kallisto_extracted)
+//
+//    when: !params.transcript_fasta && (params.aligner == 'alevin' || params.aligner == 'kallisto')
+//    script:
+//    // -F to preserve all GTF attributes in the fasta ID
+//    """
+//    gffread -F $gtf -w "${genome_fasta}.transcriptome.fa" -g $genome_fasta
+//    """
+//}
 
 /*
  * STEP 1 - Make_index
