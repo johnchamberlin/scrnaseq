@@ -494,7 +494,7 @@ process star {
     input:
     set val(samplename), file(reads) from read_files_star
     file index from star_index.collect()
-    file gtf from gtf_star.collect()
+    //file gtf from gtf_star.collect()
     file whitelist from barcode_whitelist_star.mix(barcode_whitelist_star_unzip).collect()
 
     output:
@@ -519,7 +519,7 @@ process star {
     solo_bc_read_length = params.solo_bc_read_length
     """
     STAR --genomeDir $index \\
-          --sjdbGTFfile $gtf \\
+          //--sjdbGTFfile $gtf \\
           --readFilesIn $barcode_read $cdna_read  \\
           --runThreadN ${task.cpus} \\
           --twopassMode Basic \\
