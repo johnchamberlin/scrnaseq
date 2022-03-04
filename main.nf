@@ -372,6 +372,7 @@ process star {
           --soloCBwhitelist $whitelist \\
           --soloFeatures $solo_features \\
           --soloBarcodeReadLength $solo_bc_read_length \\
+          --limitSjdbInsertNsj=2000000 \\ # doubled from default
           --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM
 
     samtools index -@ ${task.cpus} ${prefix}Aligned.sortedByCoord.out.bam # JC modified
