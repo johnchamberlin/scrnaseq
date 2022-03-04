@@ -294,28 +294,6 @@ process unzip_10x_barcodes {
  * STEP 1 - Make_index
  */
 
-process build_salmon_index {
-    tag "$fasta"
-    label 'low_memory'
-    publishDir path: { params.save_reference ? "${params.outdir}/reference_genome/salmon_index" : params.outdir },
-                saveAs: { params.save_reference ? it : null }, mode: 'copy'
-
-    when:
-    params.aligner == 'alevin' && !params.salmon_index
-
-    input:
-    file fasta from transcriptome_fasta_alevin.mix(transcriptome_fasta_alevin_extracted)
-
-    output:
-    file "salmon_index" into salmon_index_alevin
-
-    when: params.aligner == 'alevin' && !params.salmon_index
-
-    script:
-    """
-    salmon index -i salmon_index --gencode -k 31 -p 4 -t $fasta
-    """
-}
 
 
 //Create a STAR index if not supplied via --star_index
@@ -348,88 +326,7 @@ process build_salmon_index {
 //     """
 // }
 
-/*
-* Preprocessing - Generate Kallisto Index if not supplied via --kallisto_index
-*/ 
-process build_kallisto_index {
-    tag "$fasta"
-    label 'mid_memory'
-    publishDir path: { params.save_reference ? "${params.outdir}/reference_genome/kallisto_index" : params.outdir },
-                saveAs: { params.save_reference ? it : null }, mode: 'copy'
-    input:
-    file fasta from transcriptome_fasta_kallisto.mix(transcriptome_fasta_kallisto_extracted)
-
-    output:
-    file "${name}.idx" into kallisto_index
-
-    when: params.aligner == 'kallisto' && !params.kallisto_index
-
-    script:
-    if("${fasta}".endsWith('.gz')){
-      name = "${fasta.baseName}"
-      unzip = "gunzip -f ${fasta}"
-    } else {
-      unzip = ""
-      name = "${fasta}"
-    }
-    """
-    $unzip
-    kallisto index -i ${name}.idx -k 31 $name
-    """
-}
-
-/*
-* Preprocessing - Generate a Kallisto Gene Map if not supplied via --kallisto_gene_map
-*/ 
-process build_gene_map{
-    tag "$gtf"
-    publishDir "${params.outdir}/kallisto/kallisto_gene_map", mode: 'copy'
-
-    input:
-    file gtf from gtf_gene_map
-
-    output:
-    file "transcripts_to_genes.txt" into kallisto_gene_map
-
-    when: params.aligner == 'kallisto' && !params.kallisto_gene_map
-
-    script:
-    if("${gtf}".endsWith('.gz')){
-      name = "${gtf.baseName}"
-      unzip = "gunzip -f ${gtf}"
-    } else {
-      unzip = ""
-      name = "${gtf}"
-    }
-    """
-    $unzip
-    cat $name | t2g.py --use_version > transcripts_to_genes.txt
-    """
-}
-
-
-/*
-* Preprocessing - Generate TXP2Gene if not supplied via --txp2gene
-*/
-process build_txp2gene {
-    tag "$gtf"
-    publishDir "${params.outdir}/reference_data/alevin/", mode: 'copy'
-
-    input:
-    file gtf from gtf_alevin
-
-    output:
-    file "txp2gene.tsv" into txp2gene
-
-    when:
-    params.aligner == 'alevin' && !params.txp2gene
-
-    script:
-
-    """
-    bioawk -c gff '\$feature=="transcript" {print \$group}' $gtf | awk -F ' ' '{print substr(\$4,2,length(\$4)-3) "\t" substr(\$2,2,length(\$2)-3)}' > txp2gene.tsv
-    """
-}
+ 
 
 /*
 * Run Salmon Alevin
