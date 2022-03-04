@@ -247,7 +247,7 @@ process get_software_versions {
 
 /*
 * Preprocessing - Unzip 10X barcodes if they are supplied compressed
-*/ 
+*/
 process unzip_10x_barcodes {
     tag "${params.chemistry}"
     publishDir "${params.outdir}/reference_data/barcodes", mode: 'copy'
@@ -460,23 +460,23 @@ process alevin {
 }
 
 /*
-* Run Alevin QC 
+* Run Alevin QC
 */
 
 process alevin_qc {
     tag "$prefix"
     publishDir "${params.outdir}/alevin/alevin_qc", mode: 'copy'
-  
+
     when:
     params.aligner == "alevin"
-  
+
     input:
     file result from alevin_results
     file whitelist from barcode_whitelist_alevinqc.mix(barcode_whitelist_alevinqc_unzip).collect()
-  
+
     output:
     file "${result}" into alevinqc_results
-  
+
     script:
     prefix = result.toString() - '_alevin_results'
     """
@@ -494,7 +494,7 @@ process star {
     input:
     set val(samplename), file(reads) from read_files_star
     file index from star_index.collect()
-    //file gtf from gtf_star.collect()
+    file gtf from gtf_star.collect()
     file whitelist from barcode_whitelist_star.mix(barcode_whitelist_star_unzip).collect()
 
     output:
@@ -514,12 +514,12 @@ process star {
     seq_center = params.seq_center ? "--outSAMattrRGline ID:$prefix 'CN:$params.seq_center'" : ''
     cdna_read = reads[0]
     barcode_read = reads[1]
-    solo_bc_length = params.solo_bc_length
-    solo_features = params.solo_features
 
+    solo_features = params.solo_features
+    solo_bc_read_length = params.solo_bc_read_length
     """
     STAR --genomeDir $index \\
-          //--sjdbGTFfile $gtf \\
+          --sjdbGTFfile $gtf \\
           --readFilesIn $barcode_read $cdna_read  \\
           --runThreadN ${task.cpus} \\
           --twopassMode Basic \\
@@ -530,8 +530,8 @@ process star {
           --outFileNamePrefix $prefix $seq_center \\
           --soloType Droplet \\
           --soloCBwhitelist $whitelist \\
-          --soloFeatures $solo_features \\ 
-          --soloBarcodeReadLength $solo_bc_length \\ 
+          --soloFeatures $solo_features \\
+          --soloBarcodeReadLength $solo_bc_read_length \\
           --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM
 
     samtools index -@ ${task.cpus} ${prefix}Aligned.sortedByCoord.out.bam # JC modified
@@ -597,14 +597,14 @@ process bustools_correct_sort{
       sort_file = "${bus}/output.bus"
     }
     """
-    $correct    
+    $correct
     mkdir -p tmp
     bustools sort -T tmp/ -t ${task.cpus} -m ${task.memory.toGiga()}G -o ${bus}/output.corrected.sort.bus $sort_file
     """
 }
 
 /*
-* Run BUSTools count on sorted/corrected output from Kallisto|Bus 
+* Run BUSTools count on sorted/corrected output from Kallisto|Bus
 */
 process bustools_count{
     tag "$bus"
@@ -649,7 +649,7 @@ process bustools_inspect{
 }
 
 /*
- * Run MultiQC on results / logfiles 
+ * Run MultiQC on results / logfiles
  */
 process multiqc {
     publishDir "${params.outdir}/MultiQC", mode: params.publish_dir_mode
@@ -657,7 +657,7 @@ process multiqc {
     input:
     file multiqc_config from ch_multiqc_config
     file ('software_versions/*') from ch_software_versions_yaml
-    file workflow_summary from ch_workflow_summary.collectFile(name: "workflow_summary_mqc.yaml")    
+    file workflow_summary from ch_workflow_summary.collectFile(name: "workflow_summary_mqc.yaml")
     file ('STAR/*') from star_log.collect().ifEmpty([])
     file ('alevin/*') from alevin_logs.collect().ifEmpty([])
     file ('kallisto/*') from kallisto_log_for_multiqc.collect().ifEmpty([])
