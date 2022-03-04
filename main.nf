@@ -494,7 +494,7 @@ process star {
     input:
     set val(samplename), file(reads) from read_files_star
     file index from star_index.collect()
-    file gtf from gtf_star.collect()
+    //file gtf from gtf_star.collect()
     file whitelist from barcode_whitelist_star.mix(barcode_whitelist_star_unzip).collect()
 
     output:
@@ -514,12 +514,12 @@ process star {
     seq_center = params.seq_center ? "--outSAMattrRGline ID:$prefix 'CN:$params.seq_center'" : ''
     cdna_read = reads[0]
     barcode_read = reads[1]
-    // solo_bc_length = params.solo_bc_length
+    solo_bc_length = params.solo_bc_length
     solo_features = params.solo_features
 
     """
     STAR --genomeDir $index \\
-          --sjdbGTFfile $gtf \\
+          //--sjdbGTFfile $gtf \\
           --readFilesIn $barcode_read $cdna_read  \\
           --runThreadN ${task.cpus} \\
           --twopassMode Basic \\
@@ -531,7 +531,7 @@ process star {
           --soloType Droplet \\
           --soloCBwhitelist $whitelist \\
           --soloFeatures $solo_features \\ 
-          --soloBarcodeReadLength 150 \\ 
+          --soloBarcodeReadLength $solo_bc_length \\ 
           --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM
 
     samtools index -@ ${task.cpus} ${prefix}Aligned.sortedByCoord.out.bam # JC modified
