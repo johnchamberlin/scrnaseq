@@ -328,59 +328,6 @@ process unzip_10x_barcodes {
 
  
 
-/*
-* Run Salmon Alevin
-*/
-process alevin {
-    tag "$name"
-    label 'high_memory'
-    publishDir "${params.outdir}/alevin/alevin", mode: 'copy'
-
-    input:
-    set val(name), file(reads) from read_files_alevin
-    file index from salmon_index_alevin.collect()
-    file txp2gene from txp2gene.collect()
-
-    output:
-    file "${name}_alevin_results" into alevin_results, alevin_logs
-
-    when:
-    params.aligner == "alevin"
-
-    script:
-    read1 = reads[0]
-    read2 = reads[1]
-    """
-    salmon alevin -l ISR -1 ${read1} -2 ${read2} \
-      --chromium -i $index -o ${name}_alevin_results -p ${task.cpus} --tgMap $txp2gene --dumpFeatures –-dumpMtx
-    """
-}
-
-/*
-* Run Alevin QC
-*/
-
-process alevin_qc {
-    tag "$prefix"
-    publishDir "${params.outdir}/alevin/alevin_qc", mode: 'copy'
-
-    when:
-    params.aligner == "alevin"
-
-    input:
-    file result from alevin_results
-    file whitelist from barcode_whitelist_alevinqc.mix(barcode_whitelist_alevinqc_unzip).collect()
-
-    output:
-    file "${result}" into alevinqc_results
-
-    script:
-    prefix = result.toString() - '_alevin_results'
-    """
-    mv $whitelist ${result}/alevin/whitelist.txt
-    alevin_qc.r $result ${prefix} $result
-    """
-}
 
 process star {
     label 'high_memory'
