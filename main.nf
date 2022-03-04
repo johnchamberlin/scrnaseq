@@ -360,7 +360,7 @@ process star {
     solo_bc_read_length = params.solo_bc_read_length
     """
     STAR --genomeDir $index \\
-          //--sjdbGTFfile $gtf \\
+          #--sjdbGTFfile $gtf \\
           --readFilesIn $barcode_read $cdna_read  \\
           --runThreadN ${task.cpus} \\
           --twopassMode Basic \\
