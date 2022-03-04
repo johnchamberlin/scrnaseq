@@ -153,7 +153,7 @@
                     "fa_icon": "fas fa-asterisk"
                 },
                 "solo_bc_read_length": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "Barcode read length"
                 },
                 "solo_features": {
