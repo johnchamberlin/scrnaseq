@@ -374,7 +374,7 @@ process star {
           --limitSjdbInsertNsj=2000000 \\
           --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM
 
-    samtools index -@ ${task.cpus} ${prefix}Aligned.sortedByCoord.out.bam # JC modified
+    samtools index -@ ${task.cpus} ${prefix}Aligned.sortedByCoord.out.bam
     """
 }
 
