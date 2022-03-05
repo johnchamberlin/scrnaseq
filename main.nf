@@ -362,7 +362,6 @@ process star {
     STAR --genomeDir $index \\
           --readFilesIn $barcode_read $cdna_read  \\
           --runThreadN ${task.cpus} \\
-          --twopassMode Basic \\
           --outWigType bedGraph \\
           --outSAMtype BAM SortedByCoordinate $avail_mem \\
           --readFilesCommand zcat \\
