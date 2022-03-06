@@ -500,7 +500,7 @@ process star {
     input:
     set val(samplename), file(reads) from read_files_star
     file index from star_index.collect()
-    //file gtf from gtf_star.collect()
+    file gtf from gtf_star.collect()
     file whitelist from barcode_whitelist_star.mix(barcode_whitelist_star_unzip).collect()
 
     output:
