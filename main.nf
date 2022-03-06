@@ -539,7 +539,7 @@ process star {
           --soloBarcodeReadLength $solo_bc_read_length \\
           --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM
 
-    samtools index -@ ${task.cpus} ${prefix}Aligned.sortedByCoord.out.bam # JC modified
+    samtools index -@ ${task.cpus} ${prefix}Aligned.sortedByCoord.out.bam
     """
 }
 
