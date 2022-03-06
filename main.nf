@@ -63,6 +63,12 @@ if( params.gtf ){
         .fromPath(params.gtf)
         .ifEmpty { exit 1, "GTF annotation file not found: ${params.gtf}" }
         .into { gtf_extract_transcriptome; gtf_alevin; gtf_makeSTARindex; gtf_star; gtf_gene_map }
+} else {
+  gtf_extract_transcriptome = Channel.empty()
+  gtf_alevin = Channel.empty()
+  gtf_makeSTARindex = Channel.empty()
+  gtf_star = Channel.empty()
+  gtf_gene_map = Channel.empty()
 }
 
 //Check if TXP2Gene is provided for Alevin
@@ -319,34 +325,34 @@ process build_salmon_index {
 
 
 //Create a STAR index if not supplied via --star_index
-// process makeSTARindex {
-//     label 'high_memory'
-//     tag "$fasta"
-//     publishDir path: { params.save_reference ? "${params.outdir}/reference_genome/star_index" : params.outdir },
-//                 saveAs: { params.save_reference ? it : null }, mode: 'copy'
+process makeSTARindex {
+    label 'high_memory'
+    tag "$fasta"
+    publishDir path: { params.save_reference ? "${params.outdir}/reference_genome/star_index" : params.outdir },
+                saveAs: { params.save_reference ? it : null }, mode: 'copy'
 
-//     input:
-//     file fasta from genome_fasta_makeSTARindex
-//     file gtf from gtf_makeSTARindex
+    input:
+    file fasta from genome_fasta_makeSTARindex
+    file gtf from gtf_makeSTARindex
 
-//     output:
-//     file "star" into star_index
+    output:
+    file "star" into star_index
 
-//     when: params.aligner == 'star' && !params.star_index && params.fasta
+    when: params.aligner == 'star' && !params.star_index && params.fasta
 
-//     script:
-//     def avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
-//     """
-//     mkdir star
-//     STAR \\
-//         --runMode genomeGenerate \\
-//         --runThreadN ${task.cpus} \\
-//         --sjdbGTFfile $gtf \\
-//         --genomeDir star/ \\
-//         --genomeFastaFiles $fasta \\
-//         $avail_mem
-//     """
-// }
+    script:
+    def avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
+    """
+    mkdir star
+    STAR \\
+        --runMode genomeGenerate \\
+        --runThreadN ${task.cpus} \\
+        --sjdbGTFfile $gtf \\
+        --genomeDir star/ \\
+        --genomeFastaFiles $fasta \\
+        $avail_mem
+    """
+}
 
 /*
 * Preprocessing - Generate Kallisto Index if not supplied via --kallisto_index
@@ -519,10 +525,9 @@ process star {
     solo_bc_read_length = params.solo_bc_read_length
     """
     STAR --genomeDir $index \\
-          //--sjdbGTFfile $gtf \\
+          --sjdbGTFfile $gtf \\
           --readFilesIn $barcode_read $cdna_read  \\
           --runThreadN ${task.cpus} \\
-          --twopassMode Basic \\
           --outWigType bedGraph \\
           --outSAMtype BAM SortedByCoordinate $avail_mem \\
           --readFilesCommand zcat \\
