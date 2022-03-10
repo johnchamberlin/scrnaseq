@@ -325,34 +325,34 @@ process build_salmon_index {
 
 
 //Create a STAR index if not supplied via --star_index
-// process makeSTARindex {
-//     label 'high_memory'
-//     tag "$fasta"
-//     publishDir path: { params.save_reference ? "${params.outdir}/reference_genome/star_index" : params.outdir },
-//                 saveAs: { params.save_reference ? it : null }, mode: 'copy'
+process makeSTARindex {
+    label 'high_memory'
+    tag "$fasta"
+    publishDir path: { params.save_reference ? "${params.outdir}/reference_genome/star_index" : params.outdir },
+                saveAs: { params.save_reference ? it : null }, mode: 'copy'
 
-//     input:
-//     file fasta from genome_fasta_makeSTARindex
-//     file gtf from gtf_makeSTARindex
+    input:
+    file fasta from genome_fasta_makeSTARindex
+    file gtf from gtf_makeSTARindex
 
-//     output:
-//     file "star" into star_index
+    output:
+    file "star" into star_index
 
-//     when: params.aligner == 'star' && !params.star_index && params.fasta
+    when: params.aligner == 'star' && !params.star_index && params.fasta
 
-//     script:
-//     def avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
-//     """
-//     mkdir star
-//     STAR \\
-//         --runMode genomeGenerate \\
-//         --runThreadN ${task.cpus} \\
-//         --sjdbGTFfile $gtf \\
-//         --genomeDir star/ \\
-//         --genomeFastaFiles $fasta \\
-//         $avail_mem
-//     """
-// }
+    script:
+    def avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
+    """
+    mkdir star
+    STAR \\
+        --runMode genomeGenerate \\
+        --runThreadN ${task.cpus} \\
+        --sjdbGTFfile $gtf \\
+        --genomeDir star/ \\
+        --genomeFastaFiles $fasta \\
+        $avail_mem
+    """
+}
 
 /*
 * Preprocessing - Generate Kallisto Index if not supplied via --kallisto_index
@@ -386,7 +386,7 @@ process build_kallisto_index {
 
 /*
 * Preprocessing - Generate a Kallisto Gene Map if not supplied via --kallisto_gene_map
-*/ 
+*/
 process build_gene_map{
     tag "$gtf"
     publishDir "${params.outdir}/kallisto/kallisto_gene_map", mode: 'copy'
