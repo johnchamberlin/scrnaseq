@@ -356,7 +356,7 @@ process makeSTARindex {
 
 /*
 * Preprocessing - Generate Kallisto Index if not supplied via --kallisto_index
-*/ 
+*/
 process build_kallisto_index {
     tag "$fasta"
     label 'mid_memory'
@@ -386,7 +386,7 @@ process build_kallisto_index {
 
 /*
 * Preprocessing - Generate a Kallisto Gene Map if not supplied via --kallisto_gene_map
-*/ 
+*/
 process build_gene_map{
     tag "$gtf"
     publishDir "${params.outdir}/kallisto/kallisto_gene_map", mode: 'copy'
