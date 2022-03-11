@@ -530,7 +530,6 @@ process star {
           --runThreadN ${task.cpus} \\
           --outWigType bedGraph \\
           --outSAMtype BAM SortedByCoordinate $avail_mem \\
-          --readFilesCommand zcat \\
           --runDirPerm All_RWX \\
           --outFileNamePrefix $prefix $seq_center \\
           --soloType Droplet \\
