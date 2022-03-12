@@ -525,6 +525,7 @@ process star {
     solo_bc_read_length = params.solo_bc_read_length
     """
     STAR --genomeDir $index \\
+          --readFilesCommand zcat \\
           --sjdbGTFfile $gtf \\
           --readFilesIn $barcode_read $cdna_read  \\
           --runThreadN ${task.cpus} \\
